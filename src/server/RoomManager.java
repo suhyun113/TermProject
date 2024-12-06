@@ -13,7 +13,7 @@ public class RoomManager {
     public RoomManager() {
         players = new HashMap<>();
         rooms = new HashMap<>();
-        roomIdCounter = 1;
+        roomIdCounter = 1; // 초기 방 ID
     }
 
     // 닉네임 중복 확인 플레이어 추가
@@ -28,6 +28,27 @@ public class RoomManager {
     // 플레이어 제거
     public void removePlayer(String nickname) {
         players.remove(nickname);
+    }
+
+    // 방 생성
+    public Room createRoom(int maxCapacity) {
+        if (maxCapacity <= 0 || maxCapacity > 4) {
+            throw new IllegalArgumentException("방의 최대 인원 수는 1명 이상 4명 이하여야 합니다.");
+        }
+
+        Room newRoom = new Room(roomIdCounter++, maxCapacity); // 고유 ID 부여 후 증가
+        rooms.put(newRoom.getRoomId(), newRoom); // 방 저장
+        return newRoom;
+    }
+
+    // 방 삭제 => 반환값 필요x
+    public void deleteRoom(int roomId) {
+        rooms.get(roomId);
+    }
+
+    // 방 찾기
+    public Room searchRoom(int roomId) {
+        return rooms.get(roomId);
     }
 }
 

@@ -2,6 +2,7 @@ package server;
 
 // 방 정보를 관리하는 클래스
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Room {
@@ -10,9 +11,9 @@ public class Room {
     private final int maxCapacity; // 최대 플레이어 인원
 
     // Room 클래스 생성자
-    public Room(int roomId, List<Player> players, int maxCapacity) {
+    public Room(int roomId, int maxCapacity) {
         this.roomId = roomId;
-        this.players = players;
+        this.players = new ArrayList<>();
         this.maxCapacity = maxCapacity;
     }
 
