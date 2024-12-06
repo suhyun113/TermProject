@@ -24,5 +24,10 @@ public class RoomManager {
         players.put(nickname, player); // 닉네임으로 플레이어 정보 저장
         return true;
     }
+
+    // 플레이어 제거
+    public void removePlayer(String nickname) {
+        players.remove(nickname);
+    }
 }
 
