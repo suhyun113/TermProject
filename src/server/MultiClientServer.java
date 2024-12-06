@@ -8,7 +8,7 @@ import java.net.Socket;
 // 클라이언트 연결을 수락하고 ClientHandler에 위임
 
 public class MultiClientServer {
-    private static final int PORT = 8000; // 서버가 열릴 포트 번호
+    private static final int PORT = 8002; // 서버가 열릴 포트 번호
 
     public static void main(String[] args) {
         System.out.println("서버가 포트 " + PORT + "에서 시작되었습니다.");
