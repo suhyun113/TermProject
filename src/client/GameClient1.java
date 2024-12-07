@@ -63,52 +63,56 @@ public class GameClient1 {
 
                     // 방에 입장한 후, 리더와 플레이어에 맞는 메뉴 제공
                     if (isLeader) {
-                        System.out.println("1: 게임 시작");
-                        System.out.println("2: 방 나가기");
-                        System.out.print("선택: ");
-                        String choice = scanner.nextLine();
+                        while(isInRoom) { // 방에 있을 때만 반복
+                            System.out.println("1: 게임 시작");
+                            System.out.println("2: 방 나가기");
+                            System.out.print("선택: ");
+                            String choice = scanner.nextLine();
 
-                        if ("1".equals(choice)) {
-                            if (isReady) {
-                                out.println("/startGame"); // 게임 시작 명령 전송
+                            if ("1".equals(choice)) {
+                                if (isReady) {
+                                    out.println("/startGame"); // 게임 시작 명령 전송
+                                } else {
+                                    System.out.println("모든 플레이어가 준비 완료 상태여야 게임을 시작할 수 있습니다.");
+                                }
+                            } else if ("2".equals(choice)) {
+                                out.println("/quit"); // 방 나가기 명령 전송
+                                isInRoom = false; // 방 나가기 상태 변경
                             } else {
-                                System.out.println("모든 플레이어가 준비 완료 상태여야 게임을 시작할 수 있습니다.");
+                                System.out.println("올바른 선택이 아닙니다.");
                             }
-                        } else if ("2".equals(choice)) {
-                            out.println("/quit"); // 방 나가기 명령 전송
-                            isInRoom = false; // 방 나가기 상태 변경
-                        } else {
-                            System.out.println("올바른 선택이 아닙니다.");
                         }
                     } else { // 일반 플레이어일 때 메뉴 처리
-                        System.out.println("1: 대기 중");
-                        System.out.println("2: 준비 완료");
-                        System.out.println("3: 방 나가기");
-                        System.out.print("선택: ");
-                        String choice = scanner.nextLine();
+                        while (isInRoom) { // 방에 있을 때만 반복
+                            System.out.println("1: 대기 중");
+                            System.out.println("2: 준비 완료");
+                            System.out.println("3: 방 나가기");
+                            System.out.print("선택: ");
+                            String choice = scanner.nextLine();
 
-                        if ("1".equals(choice)) {
-                            if (!isWaiting) {
-                                isWaiting = true;
-                                System.out.println("현재 대기 중 상태입니다.");
-                                out.println("/notReady"); // 대기 중 상태 명령 전송
+                            if ("1".equals(choice)) {
+                                if (!isWaiting) {
+                                    isWaiting = true;
+                                    System.out.println("현재 대기 중 상태입니다.");
+                                    out.println("/notReady"); // 대기 중 상태 명령 전송
+                                } else {
+                                    System.out.println("현재 대기 중입니다.");
+                                }
+                            } else if ("2".equals(choice)) {
+                                if (isWaiting) {
+                                    isReady = true;
+                                    isWaiting = false;
+                                    System.out.println("준비 완료 상태로 변경되었습니다.");
+                                    out.println("/ready"); // 준비 완료 명령 전송
+                                } else {
+                                    System.out.println("현재 준비 완료 상태입니다.");
+                                }
+                            } else if ("3".equals(choice)) {
+                                out.println("/quit"); // 방 나가기 명령 전송
+                                isInRoom = false; // 방 나가기 상태 변경
                             } else {
-                                System.out.println("현재 대기 중입니다.");
+                                System.out.println("올바른 선택이 아닙니다.");
                             }
-                        } else if ("2".equals(choice)) {
-                            if (isWaiting) {
-                                isReady = true;
-                                isWaiting = false;
-                                System.out.println("준비 완료 상태로 변경되었습니다.");
-                                out.println("/ready"); // 준비 완료 명령 전송
-                            } else {
-                                System.out.println("현재 준비 완료 상태입니다.");
-                            }
-                        } else if ("3".equals(choice)) {
-                            out.println("/quit"); // 방 나가기 명령 전송
-                            isInRoom = false; // 방 나가기 상태 변경
-                        } else {
-                            System.out.println("올바른 선택이 아닙니다.");
                         }
                     }
                 }
