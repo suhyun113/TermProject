@@ -27,8 +27,8 @@ public class Player {
         return isReady;
     }
 
-    public void setReady(boolean ready) {
-        this.isReady = ready;
+    public void setReady(boolean isReady) {
+        this.isReady = isReady;
     }
 
     public boolean isLeader() {

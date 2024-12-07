@@ -41,7 +41,7 @@ public class RoomManager {
     }
 
     public void handlePlayerExit(Player player) {
-        Room room = getRoomForPlayer(player);
+        Room room = getRoomByPlayer(player);
         if (room != null) {
             room.removePlayerFromRoom(player);
             if (room.isEmpty()) {
@@ -52,14 +52,14 @@ public class RoomManager {
     }
 
     public void updatePlayerReadyStatus(Player player, boolean isReady) {
-        Room room = getRoomForPlayer(player);
+        Room room = getRoomByPlayer(player);
         if (room != null) {
             room.updatePlayerReadyStatus(player, isReady);
         }
     }
 
     // 특정 플레이어가 속한 방을 반환
-    public Room getRoomForPlayer(Player player) {
+    public Room getRoomByPlayer(Player player) {
         for (Room room : rooms.values()) {
             if (room.listRoomPlayers().contains(player)) {
                 return room; // 플레이어가 속한 방 반환
