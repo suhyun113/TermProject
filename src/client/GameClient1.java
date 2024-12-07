@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class GameClient {
+public class GameClient1 {
     private static final String SERVER_ADDRESS = "127.0.0.1"; // 서버 주소
     private static final int SERVER_PORT = 8002;             // 서버 포트
 
@@ -45,25 +45,16 @@ public class GameClient {
                     } else {
                         System.out.println("올바른 선택이 아닙니다.");
                     }
-
-                    if (serverMessage.contains("빠른 시작을 통해 방")) {
-                        isInRoom = true; // 방 입장 상태 설정
-                    }
-
-                    if (serverMessage.contains("당신은 방의 리더입니다.")) {
-                        isLeader = true; // 리더 상태 설정
-                    }
                 }
 
-                // 방 입장 후 메뉴 제공
+                // 방에 입장한 후 메뉴 제공
                 if (isInRoom) {
+                    // 리더일 때 메뉴 처리
                     if (isLeader) {
-                        // 리더의 메뉴
                         System.out.println("1: 게임 시작");
                         System.out.println("2: 방 나가기");
                         System.out.print("선택: ");
                         String choice = scanner.nextLine();
-
                         if ("1".equals(choice)) {
                             out.println("/startGame"); // 게임 시작 명령 전송
                         } else if ("2".equals(choice)) {
@@ -72,14 +63,12 @@ public class GameClient {
                         } else {
                             System.out.println("올바른 선택이 아닙니다.");
                         }
-                    } else {
-                        // 일반 플레이어의 메뉴
+                    } else { // 일반 플레이어일 때 메뉴 처리
                         System.out.println("1: 준비 완료");
                         System.out.println("2: 대기 상태로 변경");
                         System.out.println("3: 방 나가기");
                         System.out.print("선택: ");
                         String choice = scanner.nextLine();
-
                         if ("1".equals(choice)) {
                             out.println("/ready"); // 준비 완료 명령 전송
                         } else if ("2".equals(choice)) {

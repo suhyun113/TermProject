@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-// 클라이언트와의 통신을 처리하는 클래스
-
 public class ClientHandler implements Runnable {
     private final Socket clientSocket; // 클라이언트와의 연결 소켓
     private final RoomManager roomManager; // 방 관리 객체
@@ -15,7 +13,6 @@ public class ClientHandler implements Runnable {
     private BufferedReader in; // 클라이언트로부터의 입력 스트림
     private Player player; // 현재 플레이어 객체
 
-    // 생성자 : MultiClientServer에서 매개변수로 전달
     public ClientHandler(Socket clientSocket, RoomManager roomManager) {
         this.clientSocket = clientSocket;
         this.roomManager = roomManager;
@@ -40,63 +37,31 @@ public class ClientHandler implements Runnable {
 
                 if (roomManager.registerPlayer(nickname, new Player(nickname, clientSocket))) {
                     player = new Player(nickname, clientSocket);
-                    out.println("환영합니다, " + nickname + "!");
+                    out.println("환영합니다, " + nickname + "님!");
                     break;
                 } else {
                     out.println("이미 사용 중인 닉네임입니다. 다시 입력하세요.");
                 }
             }
 
-            // 명령어 처리 루프
+// 명령어 처리 루프
             String message;
             while ((message = in.readLine()) != null) {
                 if (message.equals("/quickStart")) {
                     Room room = roomManager.assignPlayerToRoom(player); // 방 배치
-                    out.println("빠른 시작을 통해 방" + room.getRoomId() + "에 입장했습니다.");
-
-                    if (player.isLeader()) {
-                        out.println("당신은 방의 리더입니다."); // 리더 메시지 전송
+                    if (room.getLeader().equals(player)) {
+                        out.println("빠른 시작을 통해 방 " + room.getRoomId() + "에 입장했습니다. 당신은 방의 리더입니다.");
+                    } else {
+                        out.println("빠른 시작을 통해 방 " + room.getRoomId() + "에 입장했습니다. 당신은 일반 플레이어입니다.");
                     }
-                } else if (message.equals("/ready")) {
-                    roomManager.updatePlayerReadyStatus(player, true); // 준비 상태로 변경
-                } else if (message.equals("/notReady")) {
-                    roomManager.updatePlayerReadyStatus(player, false); // 대기 상태로 변경
-                } else if (message.equals("/startGame") && player.isLeader()) {
-                    Room room = roomManager.getRoomForPlayer(player); // 플레이어가 속한 방 가져옴
-                    if (room != null) {
-                        String startMessage = room.startGame();
-                        out.println(startMessage);
-                    }
-                }
-
-                // 종료 명령
-                else if (message.equals("/quit")) {
-                    out.println("서버에서 연결을 종료합니다.");
+                } else if (message.equals("/quit")) {
+                    roomManager.handlePlayerExit(player); // 방 나가기 처리
+                    out.println("방을 나갔습니다.");
                     break;
-                } else {
-                    out.println("알 수 없는 명령입니다.");
                 }
             }
         } catch (IOException e) {
-            System.err.println("클라이언트와의 통신 오류: " + e.getMessage());
-        } finally {
-            // 연결 종료 시 처리
-            if (player != null) {
-                roomManager.handlePlayerExit(player);
-            }
-            closeConnection();
+            System.err.println("클라이언트 처리 중 오류: " + e.getMessage());
         }
-    }
-
-    // 연결 종료 처리
-    private void closeConnection() {
-        try {
-            if (out != null) out.close();
-            if (in != null) in.close();
-            if (clientSocket != null && !clientSocket.isClosed()) clientSocket.close();
-        } catch (IOException e) {
-            System.err.println("연결 종료 중 오류 발생: " + e.getMessage());
-        }
-        System.out.println("클라이언트 연결 종료");
     }
 }

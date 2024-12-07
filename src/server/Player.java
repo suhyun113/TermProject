@@ -35,9 +35,9 @@ public class Player {
         return isLeader;
     }
 
-    public void setLeader(boolean leader) {
-        this.isLeader = leader;
-        this.isReady = leader; // 리더는 항상 준비 상태
+    public void setLeader(boolean isLeader) {
+        this.isLeader = isLeader;
+        this.isReady = isLeader; // 리더는 항상 준비 상태
     }
 
     // 플레이어와 연결된 소켓 반환하는 메서드
