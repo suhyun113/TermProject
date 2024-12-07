@@ -44,7 +44,7 @@ public class ClientHandler implements Runnable {
                 }
             }
 
-// 명령어 처리 루프
+            // 명령어 처리 루프
             String message;
             while ((message = in.readLine()) != null) {
                 if (message.equals("/quickStart")) {

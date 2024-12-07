@@ -19,6 +19,8 @@ public class GameClient1 {
             String serverMessage;
             boolean isLeader = false; // 리더 여부 판단
             boolean isInRoom = false; // 방에 입장했는지 여부
+            boolean isReady = false; // 준비 상태
+            boolean isWaiting = false; // 대기 중 상태
 
             while ((serverMessage = in.readLine()) != null) {
                 System.out.println(serverMessage);
@@ -47,6 +49,21 @@ public class GameClient1 {
                     }
                 }
 
+                // 서버로부터 방 입장 메시지를 받으면 isInRoom을 true로 설정
+                if (serverMessage.contains("방에 입장했습니다.")) {
+                    isInRoom = true; // 방에 입장했다는 메시지를 받으면 isInRoom을 true로 설정
+                    System.out.println("방에 입장했습니다.");
+
+                    // 리더인지 일반 플레이어인지를 확인하고 isLeader 설정
+                    if (serverMessage.contains("리더")) { // 서버가 리더임을 알려주는 메시지일 경우
+                        isLeader = true;
+                        System.out.println("당신은 방의 리더입니다.");
+                    } else {
+                        isLeader = false;
+                        System.out.println("당신은 일반 플레이어입니다.");
+                    }
+                }
+
                 // 방에 입장한 후 메뉴 제공
                 if (isInRoom) {
                     // 리더일 때 메뉴 처리
@@ -55,8 +72,14 @@ public class GameClient1 {
                         System.out.println("2: 방 나가기");
                         System.out.print("선택: ");
                         String choice = scanner.nextLine();
+
                         if ("1".equals(choice)) {
-                            out.println("/startGame"); // 게임 시작 명령 전송
+                            if (isReady) {
+                                // 플레이어가 2명 이상이고, 준비 완료 상태일 때만 게임 시작 가능
+                                out.println("/startGame"); // 게임 시작 명령 전송
+                            } else {
+                                System.out.println("모든 플레이어가 준비 완료 상태여야 게임을 시작할 수 있습니다.");
+                            }
                         } else if ("2".equals(choice)) {
                             out.println("/quit"); // 방 나가기 명령 전송
                             isInRoom = false; // 방 나가기 상태 변경
@@ -64,15 +87,29 @@ public class GameClient1 {
                             System.out.println("올바른 선택이 아닙니다.");
                         }
                     } else { // 일반 플레이어일 때 메뉴 처리
-                        System.out.println("1: 준비 완료");
-                        System.out.println("2: 대기 상태로 변경");
+                        System.out.println("1: 대기 중");
+                        System.out.println("2: 준비 완료");
                         System.out.println("3: 방 나가기");
                         System.out.print("선택: ");
                         String choice = scanner.nextLine();
+
                         if ("1".equals(choice)) {
-                            out.println("/ready"); // 준비 완료 명령 전송
+                            if (!isWaiting) {
+                                isWaiting = true;
+                                System.out.println("현재 대기 중 상태입니다.");
+                                out.println("/notReady"); // 대기 중 상태 명령 전송
+                            } else {
+                                System.out.println("현재 대기 중입니다.");
+                            }
                         } else if ("2".equals(choice)) {
-                            out.println("/notReady"); // 대기 상태 명령 전송
+                            if (isWaiting) {
+                                isReady = true;
+                                isWaiting = false;
+                                System.out.println("준비 완료 상태로 변경되었습니다.");
+                                out.println("/ready"); // 준비 완료 명령 전송
+                            } else {
+                                System.out.println("현재 준비 완료 상태입니다.");
+                            }
                         } else if ("3".equals(choice)) {
                             out.println("/quit"); // 방 나가기 명령 전송
                             isInRoom = false; // 방 나가기 상태 변경
