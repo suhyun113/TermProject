@@ -34,6 +34,7 @@ public class GameClient1 {
 
                 // 게임 메뉴 출력 (방 입장 전)
                 if (!isInRoom && serverMessage.contains("환영합니다")) {
+                    // 게임 시작 전 메뉴 제공
                     System.out.println("1: 빠른 시작");
                     System.out.println("2: 종료");
                     System.out.print("선택: ");
@@ -50,23 +51,17 @@ public class GameClient1 {
                 }
 
                 // 서버로부터 방 입장 메시지를 받으면 isInRoom을 true로 설정
-                if (serverMessage.contains("방에 입장했습니다.")) {
-                    isInRoom = true; // 방에 입장했다는 메시지를 받으면 isInRoom을 true로 설정
-                    System.out.println("방에 입장했습니다.");
+                if (serverMessage.contains("에 입장했습니다.")) {
+                    isInRoom = true; // 에 입장했다는 메시지가 포함된 메시지를 받으면 isInRoom을 true로 설정
 
                     // 리더인지 일반 플레이어인지를 확인하고 isLeader 설정
                     if (serverMessage.contains("리더")) { // 서버가 리더임을 알려주는 메시지일 경우
                         isLeader = true;
-                        System.out.println("당신은 방의 리더입니다.");
                     } else {
                         isLeader = false;
-                        System.out.println("당신은 일반 플레이어입니다.");
                     }
-                }
 
-                // 방에 입장한 후 메뉴 제공
-                if (isInRoom) {
-                    // 리더일 때 메뉴 처리
+                    // 방에 입장한 후, 리더와 플레이어에 맞는 메뉴 제공
                     if (isLeader) {
                         System.out.println("1: 게임 시작");
                         System.out.println("2: 방 나가기");
@@ -75,7 +70,6 @@ public class GameClient1 {
 
                         if ("1".equals(choice)) {
                             if (isReady) {
-                                // 플레이어가 2명 이상이고, 준비 완료 상태일 때만 게임 시작 가능
                                 out.println("/startGame"); // 게임 시작 명령 전송
                             } else {
                                 System.out.println("모든 플레이어가 준비 완료 상태여야 게임을 시작할 수 있습니다.");
