@@ -64,8 +64,6 @@ public class Room {
         return false; // 방에 추가 실패
     }
 
-
-
     // 방에서 플레이어 제거
     public void removePlayerFromRoom(Player player) {
         roomPlayers.remove(player);
@@ -86,7 +84,6 @@ public class Room {
             }
         }
     }
-
 
     public boolean isReadyToStart() {
         return roomPlayers.size() >= 2 && roomPlayers.stream().allMatch(Player::isReady);
@@ -114,6 +111,21 @@ public class Room {
             String statusMessage = player.getNickname() + "님이 " + (isReady ? "준비 완료 상태로 변경되었습니다." : "대기 중 상태로 변경되었습니다.");
             notifyAllPlayers(statusMessage);
         }
+    }
+
+    public void setPlayerReady(Player player, boolean isReady) {
+        if (roomPlayers.contains(player)) {
+            player.setReady(isReady); // Player class should have a setReady() method
+        }
+    }
+
+    public boolean areAllPlayersReady() {
+        for (Player player : roomPlayers) {
+            if (!player.isReady()) {
+                return false; // If any player is not ready, return false
+            }
+        }
+        return true; // All players are ready
     }
 
     public void notifyAllPlayers(String message) {
