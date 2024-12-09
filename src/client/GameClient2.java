@@ -48,6 +48,23 @@ public class GameClient2 {
                         System.out.println("올바른 선택이 아닙니다.");
                     }
                 }
+                // 게임 메뉴 출력 (방 입장 후, 나간 경우)
+                if (!isInRoom && serverMessage.contains("방을 나갔습니다.")) {
+                    // 게임 시작 전 메뉴 제공
+                    System.out.println("1: 빠른 시작");
+                    System.out.println("2: 종료");
+                    System.out.print("선택: ");
+                    String choice = scanner.nextLine();
+
+                    if ("1".equals(choice)) {
+                        out.println("/quickStart"); // 빠른 시작 명령 서버로 전송
+                    } else if ("2".equals(choice)) {
+                        out.println("/quit"); // 종료 명령 서버로 전송
+                        break;
+                    } else {
+                        System.out.println("올바른 선택이 아닙니다.");
+                    }
+                }
 
                 // 서버로부터 방 입장 메시지를 받으면 isInRoom을 true로 설정
                 if (serverMessage.contains("에 입장했습니다.")) {
@@ -77,6 +94,7 @@ public class GameClient2 {
                             } else if ("2".equals(choice)) {
                                 out.println("/quit"); // 방 나가기 명령 전송
                                 isInRoom = false; // 방 나가기 상태 변경
+                                break;
                             } else {
                                 System.out.println("올바른 선택이 아닙니다.");
                             }
