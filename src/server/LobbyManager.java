@@ -45,4 +45,14 @@ public class LobbyManager {
         lobbies.put(newLobby.getLobbyId(), newLobby);
         return newLobby;
     }
+
+    public void checkAndRemoveEmptyLobby(Lobby lobby) {
+        if (lobby.isEmpty()){
+            lobbies.remove(lobby.getLobbyId());
+        }
+    }
+
+    public Set<String> getAllNicknames() {
+        return new HashSet<>(nicknames); // 모든 닉네임 반환
+    }
 }

@@ -59,4 +59,9 @@ public class Lobby {
         }
         notifyAllPlayers(stateMessage.toString());
     }
+
+    // 대기실이 비어 있는지 확인하는 메서드 추가
+    public boolean isEmpty() {
+        return players.isEmpty();
+    }
 }
