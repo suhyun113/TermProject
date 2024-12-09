@@ -15,7 +15,7 @@ public class MultiClientServer {
 
         // 서버 소켓 생성 및 클라이언트 연결 관리
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            RoomManager roomManager = new RoomManager(); // 방 관리 객체 초기화
+            LobbyManager lobbyManager = new LobbyManager(); // 대기실 관리 객체 초기화
 
             // 무한 루프: 클라이언트 연결을 계속해서 수락
             while (true) {
@@ -23,7 +23,7 @@ public class MultiClientServer {
                 System.out.println("새 클라이언트 연결: " + clientSocket.getInetAddress());
 
                 // 각 클라이언트를 독립적으로 처리하기 위해 새로운 스레드 생성
-                new Thread(new ClientHandler(clientSocket, roomManager)).start();
+                new Thread(new ClientHandler(clientSocket, lobbyManager)).start();
             }
         } catch (IOException e) {
             // 서버 소켓 생성 또는 연결 처리 중 오류 발생 시 메시지 출력
