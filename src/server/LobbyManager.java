@@ -30,7 +30,7 @@ public class LobbyManager {
         nicknames.remove(nickname);
     }
 
-    public Lobby assignPlayerToLobby(Player player) {
+    public synchronized Lobby assignPlayerToLobby(Player player) {
         // 기존 대기실 중 비어 있는 대기실 찾기
         for (Lobby lobby : lobbies.values()) {
             if (!lobby.isGameStarted() && !lobby.isFull()) {

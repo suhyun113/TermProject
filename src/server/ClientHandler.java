@@ -21,12 +21,16 @@ public class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
+            // 스트림 초기화
             out = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
+            // 서버에 연결되었다는 메시지 전송
+            out.println("서버에 성공적으로 연결되었습니다.");
+
             // 닉네임 등록
             while (true) {
-                out.println("서버에 연결되었습니다. 닉네임을 입력하세요");
+                out.println("닉네임을 입력하세요");
                 String nickname = in.readLine();
 
                 if (nickname == null || nickname.trim().isEmpty()) {
@@ -39,9 +43,11 @@ public class ClientHandler implements Runnable {
                     out.println("환영합니다, " + nickname + "님!");
                     break;
                 } else {
-                    out.println("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력하세요.");
+                    out.println("이미 사용 중인 닉네임입니다. 다시 입력하세요.");
                 }
             }
+
+
 
             // 빠른 시작 처리
             String message;
@@ -67,6 +73,11 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
         } finally {
             try {
+//                if (player != null) {
+//                    synchronized (lobbyManager) {
+//                        lobbyManager.removeNickname(player.getNickname());
+//                    }
+//                }
                 clientSocket.close();
             } catch (Exception e) {
                 e.printStackTrace();
