@@ -24,9 +24,25 @@ public class GameClient1 {
 
                 // 닉네임 입력 요청 처리
                 if (serverMessage.contains("닉네임을 입력하세요")) {
+                    String nickname;
+                    while (true) {
+                        System.out.print("닉네임 입력: ");
+                        nickname = scanner.nextLine().trim(); // 입력값 공백 제거
+                        if (nickname.isEmpty()) {
+                            System.out.println("닉네임은 비어 있을 수 없습니다. 다시 입력하세요.");
+                        } else {
+                            out.println(nickname); // 서버로 닉네임 전송
+                            break;
+                        }
+                    }
+                }
+
+                // 닉네임 중복 또는 유효하지 않을 때 재입력 요청 처리
+                if (serverMessage.contains("이미 사용 중인 닉네임입니다.")) {
+                    System.out.println("중복된 닉네임입니다. 다른 닉네임을 입력하세요.");
                     System.out.print("닉네임 입력: ");
-                    String nickname = scanner.nextLine();
-                    out.println(nickname); // 서버로 닉네임 전송
+                    String nickname = scanner.nextLine().trim();
+                    out.println(nickname);
                 }
 
                 // 대기실 입장 전 메뉴 처리

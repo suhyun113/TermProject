@@ -25,10 +25,23 @@ public class ClientHandler implements Runnable {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
             // 닉네임 등록
-            out.println("서버에 연결되었습니다. 닉네임을 입력하세요");
-            String nickname = in.readLine();
-            player = new Player(nickname, clientSocket);
-            out.println("환영합니다, " + nickname + "님!");
+            while (true) {
+                out.println("서버에 연결되었습니다. 닉네임을 입력하세요");
+                String nickname = in.readLine();
+
+                if (nickname == null || nickname.trim().isEmpty()) {
+                    out.println("닉네임은 비어 있을 수 없습니다. 다시 입력하세요.");
+                    continue;
+                }
+
+                if (lobbyManager.registerNickname(nickname)) {
+                    player = new Player(nickname, clientSocket);
+                    out.println("환영합니다, " + nickname + "님!");
+                    break;
+                } else {
+                    out.println("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력하세요.");
+                }
+            }
 
             // 빠른 시작 처리
             String message;
