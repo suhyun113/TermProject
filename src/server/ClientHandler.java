@@ -57,7 +57,6 @@ public class ClientHandler implements Runnable {
                     if (currentLobby.isFull()) {
                         currentLobby.notifyLobbyState();
                         currentLobby.notifyAllPlayers("대기실이 가득 찼습니다. 잠시 뒤에 게임이 시작됩니다.");
-                        Thread.sleep(3000); // 3초 대기
                         currentLobby.startGame();
                     } else {
                         out.println(currentLobby.getLobbyId() + "번 대기실에 입장했습니다. 다른 플레이어를 기다리는 중입니다.");

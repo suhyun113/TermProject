@@ -38,8 +38,19 @@ public class Lobby {
 
     public void startGame() {
         gameStarted = true;
-        notifyAllPlayers("1번 대기실에서 게임이 시작됩니다!");
+
+        // 카운트다운 메시지
+        try {
+            for (int i = 3; i > 0; i--) {
+                notifyAllPlayers(i + "...");
+                Thread.sleep(1000); // 1초 대기
+            }
+            notifyAllPlayers(lobbyId + "번 대기실에서 게임이 시작됩니다!");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
+
 
     public void notifyAllPlayers(String message) {
         for (Player player : players) {
