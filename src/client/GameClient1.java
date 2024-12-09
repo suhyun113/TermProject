@@ -26,8 +26,7 @@ public class GameClient1 {
                 if (serverMessage.contains("닉네임을 입력하세요")) {
                     System.out.print("닉네임: ");
                     String nickname = scanner.nextLine();
-                    out.println(nickname); // 닉네임 전송
-                    continue;
+                    out.println(nickname); // 서버로 닉네임 전송
                 }
 
                 // 대기실 입장 전 메뉴 처리
