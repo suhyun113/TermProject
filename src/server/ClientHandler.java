@@ -70,13 +70,17 @@ public class ClientHandler implements Runnable {
                             currentRoom = null; // 방 나간 후, 현재 방을 null로 설정
                             break; // 종료 조건
                         case "/startGame":
-                            if (currentRoom.getLeader().equals(player)) {
-                                if (currentRoom.areAllPlayersReady()) {
+                            if (currentRoom.getLeader().equals(player)) { // 리더인지 확인
+                                if (currentRoom.listRoomPlayers().size() < 2) { // 방에 2명 미만일 경우
+                                    out.println("게임을 시작할 수 없습니다. 최소 2명 이상의 플레이어가 필요합니다.");
+                                } else if (!currentRoom.areAllPlayersReady()) { // 모든 플레이어가 준비되지 않은 경우
+                                    out.println("모든 플레이어가 준비 완료 상태여야 게임을 시작할 수 있습니다.");
+                                } else {
                                     out.println("게임을 시작합니다!");
                                     currentRoom.startGame(); // 게임 시작
-                                } else {
-                                    out.println("모든 플레이어가 준비 완료 상태여야 게임을 시작할 수 있습니다.");
                                 }
+                            } else {
+                                out.println("게임 시작 권한이 없습니다."); // 리더가 아닌데 게임 시작이 뜨는 오류
                             }
                             break;
                         case "/ready":

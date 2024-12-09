@@ -19,7 +19,6 @@ public class GameClient1 {
             String serverMessage;
             boolean isLeader = false; // 리더 여부 판단
             boolean isInRoom = false; // 방에 입장했는지 여부
-            boolean isReady = false; // 준비 상태
             boolean isWaiting = false; // 대기 중 상태
 
             while ((serverMessage = in.readLine()) != null) {
@@ -70,10 +69,10 @@ public class GameClient1 {
                             String choice = scanner.nextLine();
 
                             if ("1".equals(choice)) {
-                                if (isReady) {
-                                    out.println("/startGame"); // 게임 시작 명령 전송
-                                } else {
-                                    System.out.println("모든 플레이어가 준비 완료 상태여야 게임을 시작할 수 있습니다.");
+                                out.println("/startGame"); // 게임 시작 명령 전송
+                                String response = in.readLine(); // 서버로부터 응답 메시지 수신
+                                if (response != null) {
+                                    System.out.println(response); // 서버의 응답 메시지 출력
                                 }
                             } else if ("2".equals(choice)) {
                                 out.println("/quit"); // 방 나가기 명령 전송
@@ -100,7 +99,6 @@ public class GameClient1 {
                                 }
                             } else if ("2".equals(choice)) {
                                 if (isWaiting) {
-                                    isReady = true;
                                     isWaiting = false;
                                     System.out.println("준비 완료 상태로 변경되었습니다.");
                                     out.println("/ready"); // 준비 완료 명령 전송
