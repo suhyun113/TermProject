@@ -54,7 +54,7 @@ public class ClientHandler implements Runnable {
                         Thread.sleep(3000); // 3초 대기
                         currentLobby.startGame();
                     } else {
-                        out.println("1번 대기실에 입장했습니다. 다른 플레이어를 기다리는 중입니다.");
+                        out.println(currentLobby.getLobbyId() + "번 대기실에 입장했습니다. 다른 플레이어를 기다리는 중입니다.");
                     }
                 } else if (message.equals("/quit")) {
                     out.println("게임을 종료합니다.");
