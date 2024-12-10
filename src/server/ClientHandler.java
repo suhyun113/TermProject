@@ -63,6 +63,13 @@ public class ClientHandler implements Runnable {
                     }
                 } else if (message.equals("/quit")) {
                     out.println("게임을 종료합니다.");
+
+                    // 닉네임 삭제 처리
+                    synchronized (lobbyManager) {
+                        if (player != null) {
+                            lobbyManager.removeNickname(player.getNickname());
+                        }
+                    }
                     break;
                 } else {
                     out.println("알 수 없는 명령입니다.");
