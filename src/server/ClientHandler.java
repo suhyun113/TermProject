@@ -1,24 +1,93 @@
 package server;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
-// 클라이언트와의 통신을 처리하는 클래스
-// 추후 구현 예정
-
 public class ClientHandler implements Runnable {
-    private final Socket clientSocket; // 클라이언트와의 연결 소켓
-    private final RoomManager roomManager; // 방 관리 객체
+    private final Socket clientSocket;
+    private final LobbyManager lobbyManager;
+    private PrintWriter out;
+    private BufferedReader in;
+    private Player player;
+    private Lobby currentLobby;
 
-    // 생성자 : MultiClientServer에서 매개변수로 전달
-    public ClientHandler(Socket clientSocket, RoomManager roomManager) {
+    public ClientHandler(Socket clientSocket, LobbyManager lobbyManager) {
         this.clientSocket = clientSocket;
-        this.roomManager = roomManager;
+        this.lobbyManager = lobbyManager;
     }
 
     @Override
     public void run() {
-        // 로직 미구현 상태
-        System.out.println("ClientHandler 실행 (추후 구현 예정)");
+        try {
+            // 스트림 초기화
+            out = new PrintWriter(clientSocket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+            // 서버에 연결되었다는 메시지 전송
+            out.println("서버에 성공적으로 연결되었습니다.");
+
+            // 닉네임 등록
+            while (true) {
+                out.println("닉네임을 입력하세요");
+                String nickname = in.readLine();
+
+                if (nickname == null || nickname.trim().isEmpty()) {
+                    out.println("닉네임은 비어 있을 수 없습니다. 다시 입력하세요.");
+                    continue;
+                }
+
+                if (lobbyManager.registerNickname(nickname)) {
+                    player = new Player(nickname, clientSocket);
+                    out.println("환영합니다, " + nickname + "님!");
+                    break;
+                } else {
+                    out.println("이미 사용 중인 닉네임입니다. 다시 입력하세요.");
+                }
+            }
+
+
+
+            // 빠른 시작 처리
+            String message;
+            while ((message = in.readLine()) != null) {
+                if (message.equals("/quickStart")) {
+                    currentLobby = lobbyManager.assignPlayerToLobby(player);
+                    if (currentLobby.isFull()) {
+                        currentLobby.notifyLobbyState();
+                        currentLobby.notifyAllPlayers("대기실이 가득 찼습니다. 잠시 뒤에 게임이 시작됩니다.");
+                        currentLobby.startGame();
+                    } else {
+                        out.println(currentLobby.getLobbyId() + "번 대기실에 입장했습니다. 다른 플레이어를 기다리는 중입니다.");
+                    }
+                } else if (message.equals("/quit")) {
+                    out.println("게임을 종료합니다.");
+
+                    // 닉네임 삭제 처리
+                    synchronized (lobbyManager) {
+                        if (player != null) {
+                            lobbyManager.removeNickname(player.getNickname());
+                        }
+                    }
+                    break;
+                } else {
+                    out.println("알 수 없는 명령입니다.");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+//                if (player != null) {
+//                    synchronized (lobbyManager) {
+//                        lobbyManager.removeNickname(player.getNickname());
+//                    }
+//                }
+                clientSocket.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
-
