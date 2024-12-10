@@ -47,12 +47,16 @@ public class LobbyManager {
     }
 
     public void checkAndRemoveEmptyLobby(Lobby lobby) {
-        if (lobby.isEmpty()){
+        if (lobby.isEmpty()) {
             lobbies.remove(lobby.getLobbyId());
         }
     }
 
     public Set<String> getAllNicknames() {
         return new HashSet<>(nicknames); // 모든 닉네임 반환
+    }
+
+    public synchronized Map<Integer, Lobby> getAllLobbies() {
+        return new HashMap<>(lobbies); // 모든 대기실 목록 반환
     }
 }

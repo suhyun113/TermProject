@@ -3,6 +3,7 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -38,7 +39,7 @@ public class MultiClientServer {
     private static void handleAdminCommands(LobbyManager lobbyManager) {
         Scanner scanner = new Scanner(System.in);
         while (true) {
-            System.out.println("서버 명령을 입력하세요 (players: 접속 중인 플레이어 확인, quit: 서버 종료): ");
+            System.out.println("서버 명령을 입력하세요 (players: 접속 중인 플레이어 확인, lobbies: 대기실 상태 확인, quit: 서버 종료): ");
             String command = scanner.nextLine().trim();
 
             if ("players".equalsIgnoreCase(command)) {
@@ -49,6 +50,19 @@ public class MultiClientServer {
                 } else {
                     for (String nickname : nicknames) {
                         System.out.println("- " + nickname);
+                    }
+                }
+            } else if ("lobbies".equalsIgnoreCase(command)) {
+                Map<Integer, Lobby> allLobbies = lobbyManager.getAllLobbies();
+                System.out.println("현재 대기실 상태:");
+                if (allLobbies.isEmpty()) {
+                    System.out.println("- 없음");
+                } else {
+                    for (Map.Entry<Integer, Lobby> entry : allLobbies.entrySet()) {
+                        int lobbyId = entry.getKey();
+                        Lobby lobby = entry.getValue();
+                        String status = lobby.isGameStarted() ? "게임 중" : "대기 중";
+                        System.out.println("- 대기실 ID: " + lobbyId + " (" + status + ")");
                     }
                 }
             } else if ("quit".equalsIgnoreCase(command)) {
