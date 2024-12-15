@@ -76,7 +76,7 @@ public class GameSession {
             questionsSolved++;
 
             if (questionsSolved == currentRoom.getQuestions().size()) {
-                notifyPlayers(currentRoom.getRoomId() + "번 방을 클리어했습니다!");
+                notifyPlayers("이 방을 클리어했습니다!");
                 roomManager.moveToNextRoom();
                 enterRoom(roomManager.getCurrentRoom());
             } else {
