@@ -19,6 +19,10 @@ public class Room {
         return roomId;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
     public List<Question> getQuestions() {
         return questions;
     }

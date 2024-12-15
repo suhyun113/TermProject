@@ -26,10 +26,6 @@ public class RoomManager {
         return rooms.get(roomId);
     }
 
-    public int getTotalRooms() {
-        return rooms.size();
-    }
-
     public Question getNextQuestion() {
         if (currentRoom == null) {
             return null; // 모든 방이 끝난 경우
@@ -52,8 +48,12 @@ public class RoomManager {
         }
     }
 
-    public boolean hasNextQuestion() {
-        return currentRoom != null && (currentQuestionIndex < currentRoom.getQuestions().size() ||
-                rooms.containsKey(currentRoom.getRoomId() + 1));
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public void moveToNextRoom() {
+        currentRoom = rooms.get(currentRoom.getRoomId() + 1);
+        currentQuestionIndex = 0;
     }
 }
