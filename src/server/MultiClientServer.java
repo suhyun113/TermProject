@@ -18,7 +18,7 @@ public class MultiClientServer {
 
         // 서버 소켓 생성 및 클라이언트 연결 관리
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
-            LobbyManager lobbyManager = new LobbyManager(); // 대기실 관리 객체 초기화
+            LobbyManager lobbyManager = LobbyManager.getInstance(); // 대기실 관리 객체 초기화
             Thread adminThread = new Thread(() -> handleAdminCommands(lobbyManager));
             adminThread.start();
 

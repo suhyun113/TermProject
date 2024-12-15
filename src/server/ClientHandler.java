@@ -47,8 +47,6 @@ public class ClientHandler implements Runnable {
                 }
             }
 
-
-
             // 빠른 시작 처리
             String message;
             while ((message = in.readLine()) != null) {
@@ -71,6 +69,20 @@ public class ClientHandler implements Runnable {
                         }
                     }
                     break;
+                } else if (message.startsWith("/answer ")) {
+                    if (currentLobby == null || !currentLobby.isGameStarted()) {
+                        out.println("현재 게임이 진행 중이 아닙니다. /quickStart로 게임을 시작하세요.");
+                        return; // return 대신 loop를 계속 진행
+                    }
+
+                    // GameSession에 정답 제출
+                    String answer = message.substring(8).trim(); // "/answer " 이후의 문자열 추출
+                    GameSession gameSession = currentLobby.getGameSession();
+                    if (gameSession != null) {
+                        gameSession.submitAnswer(player, answer); // GameSession에 정답 전달
+                    } else {
+                        out.println("현재 게임 세션이 활성화되지 않았습니다.");
+                    }
                 } else {
                     out.println("알 수 없는 명령입니다.");
                 }
@@ -79,11 +91,6 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
         } finally {
             try {
-//                if (player != null) {
-//                    synchronized (lobbyManager) {
-//                        lobbyManager.removeNickname(player.getNickname());
-//                    }
-//                }
                 clientSocket.close();
             } catch (Exception e) {
                 e.printStackTrace();

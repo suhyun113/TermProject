@@ -7,7 +7,7 @@ public class Player {
     private final Socket clientSocket; // 플레이어와 연결된 소켓
 
     // Player 클래스 생성자
-    public Player(String nickname, Socket clientSocket) {
+    public Player(String nickname, Socket clientSocket) throws Exception {
         this.nickname = nickname;
         this.clientSocket = clientSocket;
     }

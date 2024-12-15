@@ -9,15 +9,21 @@ public class Lobby {
     private final List<Player> players;
     private final int maxPlayers = 2; // 최대 2명
     private boolean gameStarted;
+    private GameSession gameSession; // 현재 게임 세션
 
     public Lobby(int lobbyId) {
         this.lobbyId = lobbyId;
         this.players = new ArrayList<>();
         this.gameStarted = false;
+        this.gameSession = null;
     }
 
     public int getLobbyId() {
         return lobbyId;
+    }
+
+    public List<Player> getPlayers() {
+        return new ArrayList<>(players);
     }
 
     public boolean isGameStarted() {
@@ -37,20 +43,27 @@ public class Lobby {
     }
 
     public void startGame() {
+        if (gameStarted) return; // 이미 게임이 시작되었다면 무시
         gameStarted = true;
 
-        // 카운트다운 메시지
         try {
             for (int i = 3; i > 0; i--) {
                 notifyAllPlayers(i + "...");
-                Thread.sleep(1000); // 1초 대기
+                Thread.sleep(1000);
             }
             notifyAllPlayers(lobbyId + "번 대기실에서 게임이 시작됩니다!");
+
+            // 게임 세션 생성 및 시작
+            gameSession = new GameSession(players); // 게임 세션 생성
+            gameSession.start(); // 게임 세션 실행
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
+    public GameSession getGameSession() {
+        return gameSession;
+    }
 
     public void notifyAllPlayers(String message) {
         for (Player player : players) {
@@ -71,8 +84,35 @@ public class Lobby {
         notifyAllPlayers(stateMessage.toString());
     }
 
-    // 대기실이 비어 있는지 확인하는 메서드 추가
     public boolean isEmpty() {
         return players.isEmpty();
     }
+
+    public void endGameAndReset() {
+        try {
+            notifyAllPlayers("곧 " + lobbyId + "번 대기실이 삭제됩니다.");
+            for (int i = 3; i > 0; i--) {
+                notifyAllPlayers(i + "...");
+                Thread.sleep(1000);
+            }
+            notifyAllPlayers(lobbyId + "번 대기실이 삭제되었습니다.");
+
+            // 대기실 초기화 및 플레이어 연결 종료
+            for (Player player : players) {
+                try {
+                    player.getClientSocket().close(); // 플레이어 소켓 닫기
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // LobbyManager에서 대기실 삭제
+            LobbyManager lobbyManager = LobbyManager.getInstance(); // 싱글톤 인스턴스
+            lobbyManager.removeLobby(lobbyId);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
