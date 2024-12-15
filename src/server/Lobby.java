@@ -9,11 +9,13 @@ public class Lobby {
     private final List<Player> players;
     private final int maxPlayers = 2; // 최대 2명
     private boolean gameStarted;
+    private GameSession gameSession; // 현재 게임 세션
 
     public Lobby(int lobbyId) {
         this.lobbyId = lobbyId;
         this.players = new ArrayList<>();
         this.gameStarted = false;
+        this.gameSession = null;
     }
 
     public int getLobbyId() {
@@ -37,6 +39,7 @@ public class Lobby {
     }
 
     public void startGame() {
+        if (gameStarted) return; // 이미 게임이 시작되었다면 무시
         gameStarted = true;
 
         // 카운트다운 메시지
@@ -46,11 +49,18 @@ public class Lobby {
                 Thread.sleep(1000); // 1초 대기
             }
             notifyAllPlayers(lobbyId + "번 대기실에서 게임이 시작됩니다!");
+
+            // 게임 세션 생성 및 시작
+            gameSession = new GameSession(players); // 게임 세션 생성
+            gameSession.start(); // 게임 세션 실행
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
+    public GameSession getGameSession() {
+        return gameSession; // 현재 게임 세션 반환
+    }
 
     public void notifyAllPlayers(String message) {
         for (Player player : players) {

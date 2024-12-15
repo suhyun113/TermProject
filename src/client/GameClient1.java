@@ -44,10 +44,22 @@ public class GameClient1 {
                     } else {
                         System.out.println("올바른 선택이 아닙니다. 다시 입력하세요.");
                     }
+                    continue;
                 }
 
-                // 게임 종료 메시지를 받으면 프로그램 종료
-                if (serverMessage.contains("게임이 시작됩니다!") || serverMessage.contains("게임을 종료합니다.")) {
+                if (serverMessage.contains("문제:")) {
+                    System.out.print("정답: ");
+                    String answer = scanner.nextLine();
+                    out.println("/answer " + answer);
+                    continue;
+                }
+
+                if (serverMessage.contains("정답입니다!") || serverMessage.contains("정답이 아닙니다.")) {
+                    continue;
+                }
+
+                if (serverMessage.contains("탈출 성공!") || serverMessage.contains("게임 종료")) {
+                    System.out.println("게임 종료: " + serverMessage);
                     break;
                 }
             }
