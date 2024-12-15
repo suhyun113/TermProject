@@ -18,12 +18,8 @@ public class RoomManager {
 
     private void initializeRooms() {
         rooms.put(1, new Room(1, "수학", questionManager.getQuestionsByCategory("수학")));
-//        rooms.put(2, new Room(2, "상식", questionManager.getQuestionsByCategory("상식")));
-//        rooms.put(3, new Room(3, "넌센스", questionManager.getQuestionsByCategory("넌센스")));
-    }
-
-    public Room getRoom(int roomId) {
-        return rooms.get(roomId);
+        rooms.put(2, new Room(2, "상식", questionManager.getQuestionsByCategory("상식")));
+        rooms.put(3, new Room(3, "넌센스", questionManager.getQuestionsByCategory("넌센스")));
     }
 
     public Question getNextQuestion() {

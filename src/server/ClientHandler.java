@@ -47,8 +47,6 @@ public class ClientHandler implements Runnable {
                 }
             }
 
-
-
             // 빠른 시작 처리
             String message;
             while ((message = in.readLine()) != null) {
