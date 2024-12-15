@@ -57,6 +57,16 @@ public class LobbyManager {
         return newLobby;
     }
 
+    public synchronized void removeLobby(int lobbyId) {
+        Lobby lobby = lobbies.get(lobbyId);
+        if (lobby != null) {
+            for (Player player : lobby.getPlayers()) {
+                nicknames.remove(player.getNickname()); // 닉네임 목록에서 제거
+            }
+            lobbies.remove(lobbyId); // 대기실 목록에서 제거
+        }
+    }
+
     // 플레이어가 속한 대기실 찾기
     public synchronized Lobby getLobbyByPlayer(Player player) {
         for (Lobby lobby : lobbies.values()) {
@@ -65,12 +75,6 @@ public class LobbyManager {
             }
         }
         return null; // 대기실을 찾을 수 없음
-    }
-
-    public synchronized void checkAndRemoveEmptyLobby(Lobby lobby) {
-        if (lobby.isEmpty()) {
-            lobbies.remove(lobby.getLobbyId());
-        }
     }
 
     public synchronized Map<Integer, Lobby> getAllLobbies() {

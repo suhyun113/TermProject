@@ -96,20 +96,23 @@ public class Lobby {
                 Thread.sleep(1000);
             }
             notifyAllPlayers(lobbyId + "번 대기실이 삭제되었습니다.");
-            // 카운트다운 메시지
-//            for (int i = 3; i > 0; i--) {
-//                notifyAllPlayers("게임 종료 후 " + i + "초 후에 대기실이 삭제됩니다.");
-//                Thread.sleep(1000);
-//            }
 
-            // 대기실 초기화 및 삭제
-            notifyAllPlayers("초기 메뉴로 돌아갑니다.");
-            players.clear();
-            gameStarted = false;
-            gameSession = null;
+            // 대기실 초기화 및 플레이어 연결 종료
+            for (Player player : players) {
+                try {
+                    player.getClientSocket().close(); // 플레이어 소켓 닫기
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // LobbyManager에서 대기실 삭제
+            LobbyManager lobbyManager = LobbyManager.getInstance(); // 싱글톤 인스턴스
+            lobbyManager.removeLobby(lobbyId);
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
+
 }
