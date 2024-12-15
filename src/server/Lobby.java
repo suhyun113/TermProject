@@ -22,6 +22,10 @@ public class Lobby {
         return lobbyId;
     }
 
+    public List<Player> getPlayers() {
+        return new ArrayList<>(players);
+    }
+
     public boolean isGameStarted() {
         return gameStarted;
     }
@@ -42,11 +46,10 @@ public class Lobby {
         if (gameStarted) return; // 이미 게임이 시작되었다면 무시
         gameStarted = true;
 
-        // 카운트다운 메시지
         try {
             for (int i = 3; i > 0; i--) {
                 notifyAllPlayers(i + "...");
-                Thread.sleep(1000); // 1초 대기
+                Thread.sleep(1000);
             }
             notifyAllPlayers(lobbyId + "번 대기실에서 게임이 시작됩니다!");
 
@@ -59,7 +62,7 @@ public class Lobby {
     }
 
     public GameSession getGameSession() {
-        return gameSession; // 현재 게임 세션 반환
+        return gameSession;
     }
 
     public void notifyAllPlayers(String message) {
@@ -81,8 +84,32 @@ public class Lobby {
         notifyAllPlayers(stateMessage.toString());
     }
 
-    // 대기실이 비어 있는지 확인하는 메서드 추가
     public boolean isEmpty() {
         return players.isEmpty();
+    }
+
+    public void endGameAndReset() {
+        try {
+            notifyAllPlayers("곧 " + lobbyId + "번 대기실이 삭제됩니다.");
+            for (int i = 3; i > 0; i--) {
+                notifyAllPlayers(i + "...");
+                Thread.sleep(1000);
+            }
+            notifyAllPlayers(lobbyId + "번 대기실이 삭제되었습니다.");
+            // 카운트다운 메시지
+//            for (int i = 3; i > 0; i--) {
+//                notifyAllPlayers("게임 종료 후 " + i + "초 후에 대기실이 삭제됩니다.");
+//                Thread.sleep(1000);
+//            }
+
+            // 대기실 초기화 및 삭제
+            notifyAllPlayers("초기 메뉴로 돌아갑니다.");
+            players.clear();
+            gameStarted = false;
+            gameSession = null;
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

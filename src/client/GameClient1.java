@@ -7,8 +7,8 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class GameClient1 {
-    private static final String SERVER_ADDRESS = "127.0.0.1"; // 서버 주소
-    private static final int SERVER_PORT = 8002;             // 서버 포트
+    private static final String SERVER_ADDRESS = "127.0.0.1";
+    private static final int SERVER_PORT = 8002;
 
     public static void main(String[] args) {
         try (Socket socket = new Socket(SERVER_ADDRESS, SERVER_PORT);
@@ -18,18 +18,15 @@ public class GameClient1 {
 
             String serverMessage;
 
-            // 서버 메시지 처리 루프
             while ((serverMessage = in.readLine()) != null) {
                 System.out.println(serverMessage);
 
-                // 닉네임 입력 요청 처리
                 if (serverMessage.contains("닉네임을 입력하세요")) {
                     System.out.print("닉네임: ");
                     String nickname = scanner.nextLine();
-                    out.println(nickname); // 서버로 닉네임 전송
+                    out.println(nickname);
                 }
 
-                // 대기실 입장 전 메뉴 처리
                 if (serverMessage.contains("환영합니다")) {
                     System.out.println("1: 빠른 시작");
                     System.out.println("2: 종료");
@@ -37,9 +34,9 @@ public class GameClient1 {
                     String choice = scanner.nextLine();
 
                     if ("1".equals(choice)) {
-                        out.println("/quickStart"); // 빠른 시작 명령 전송
+                        out.println("/quickStart");
                     } else if ("2".equals(choice)) {
-                        out.println("/quit"); // 종료 명령 전송
+                        out.println("/quit");
                         break;
                     } else {
                         System.out.println("올바른 선택이 아닙니다. 다시 입력하세요.");
@@ -47,20 +44,15 @@ public class GameClient1 {
                     continue;
                 }
 
+                if (serverMessage.contains("게임 종료")) {
+                    System.out.println("게임이 종료되었습니다. 초기 메뉴로 돌아갑니다.");
+                    continue;
+                }
+
                 if (serverMessage.contains("문제:")) {
                     System.out.print("정답: ");
                     String answer = scanner.nextLine();
                     out.println("/answer " + answer);
-                    continue;
-                }
-
-                if (serverMessage.contains("정답입니다!") || serverMessage.contains("정답이 아닙니다.")) {
-                    continue;
-                }
-
-                if (serverMessage.contains("탈출 성공!") || serverMessage.contains("게임 종료")) {
-                    System.out.println("게임 종료: " + serverMessage);
-                    break;
                 }
             }
         } catch (Exception e) {
