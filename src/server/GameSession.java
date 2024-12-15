@@ -54,12 +54,14 @@ public class GameSession {
             moveToNextQuestion(); // 다음 문제로 이동
         } else {
             notifyPlayers("모든 플레이어가 정답을 제출했지만, 정답이 틀렸습니다. 다시 시도하세요.");
+            resetForRetry(); // 상태 초기화 및 문제 재출력
         }
 
         // 상태 초기화
         playerAnswers.clear();
     }
 
+    // 문제 해결 및 다음 문제로 이동
     private void moveToNextQuestion() {
         currentQuestion = roomManager.getNextQuestion(); // 다음 문제 가져오기
         if (currentQuestion != null) {
@@ -67,6 +69,12 @@ public class GameSession {
         } else {
             notifyPlayers("모든 문제를 해결했습니다! 게임이 종료됩니다.");
         }
+    }
+
+    // 문제 실패 및 재시도
+    private void resetForRetry() {
+        playerAnswers.clear(); // 플레이어 정답 상태 초기화
+        notifyPlayers("문제: " + currentQuestion.getText());
     }
 
     private void notifyPlayers(String message) {
